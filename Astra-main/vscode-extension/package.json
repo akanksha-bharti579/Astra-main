@@ -1,0 +1,153 @@
+{
+  "name": "astra-carbon-tracker",
+  "displayName": "Astra",
+  "description": "Track and optimize carbon footprint and costs in your codebase",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Other",
+    "Visualization"
+  ],
+  "activationEvents": [
+    "onLanguage:python",
+    "onLanguage:typescript",
+    "onLanguage:javascript"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "cost-tracker.showCostDetails",
+        "title": "Show Cost Details"
+      },
+      {
+        "command": "cost-tracker.updateUserCount",
+        "title": "Update User Count for Simulation",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "cost-tracker.refresh",
+        "title": "Refresh Cost Analysis",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "cost-tracker.toggleMockData",
+        "title": "Toggle Mock Data (Testing)"
+      },
+      {
+        "command": "cost-tracker.showCallDetails",
+        "title": "Show Call Details"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "cost-tracker-sidebar",
+          "title": "Astra",
+          "icon": "media/logo.svg"
+        }
+      ]
+    },
+    "views": {
+      "cost-tracker-sidebar": [
+        {
+          "id": "cost-tracker-panel",
+          "name": "Astra",
+          "icon": "media/logo.svg"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "cost-tracker.refresh",
+          "when": "view == cost-tracker-panel",
+          "group": "navigation"
+        },
+        {
+          "command": "cost-tracker.updateUserCount",
+          "when": "view == cost-tracker-panel",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "cost-tracker.showCallDetails",
+          "when": "view == cost-tracker-panel && viewItem == call_item",
+          "group": "inline"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Astra",
+      "properties": {
+        "astra.monthlyCarbonBudget": {
+          "type": "number",
+          "default": 10000,
+          "description": "Monthly Carbon Budget in gCO2e (default: 10,000g / 10kg)"
+        },
+        "astra.monthlyBudget": {
+          "type": "number",
+          "default": 500,
+          "description": "Monthly Financial Budget in USD (Secondary Metric)"
+        }
+      }
+    },
+    "colors": [
+      {
+        "id": "quota.icon.critical",
+        "description": "Color for critical impact items",
+        "defaults": {
+          "dark": "#AD46FF",
+          "light": "#8000FF",
+          "highContrast": "#FF00FF"
+        }
+      },
+      {
+        "id": "quota.icon.high",
+        "description": "Color for high impact items",
+        "defaults": {
+          "dark": "#FFD700",
+          "light": "#FFD700",
+          "highContrast": "#FFD700"
+        }
+      },
+      {
+        "id": "quota.icon.normal",
+        "description": "Color for normal/low impact items",
+        "defaults": {
+          "dark": "#00BFFF",
+          "light": "#007ACC",
+          "highContrast": "#0000FF"
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test",
+    "ci:check": "node out/ci/astra-ci.js"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "22.x",
+    "@types/vscode": "^1.108.1",
+    "@vscode/test-cli": "^0.0.12",
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "^9.39.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.52.0"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "@typescript-eslint/parser": "^8.52.0",
+    "dotenv": "^17.2.3"
+  }
+}

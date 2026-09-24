@@ -1,0 +1,59 @@
+[
+    {
+        "inputs": [
+            {"internalType": "bytes32", "name": "_entryHash", "type": "bytes32"},
+            {"internalType": "uint8", "name": "_entryType", "type": "uint8"}
+        ],
+        "name": "registerEntry",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [{"internalType": "bytes32", "name": "_entryHash", "type": "bytes32"}],
+        "name": "isVerified",
+        "outputs": [{"internalType": "bool", "name": "", "type": "bool"}],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [{"internalType": "bytes32", "name": "_entryHash", "type": "bytes32"}],
+        "name": "getEntry",
+        "outputs": [
+            {"internalType": "bytes32", "name": "", "type": "bytes32"},
+            {"internalType": "uint8", "name": "", "type": "uint8"},
+            {"internalType": "address", "name": "", "type": "address"},
+            {"internalType": "uint256", "name": "", "type": "uint256"},
+            {"internalType": "bool", "name": "", "type": "bool"}
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "totalEntries",
+        "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {"indexed": true, "internalType": "bytes32", "name": "entryHash", "type": "bytes32"},
+            {"indexed": false, "internalType": "uint8", "name": "entryType", "type": "uint8"},
+            {"indexed": true, "internalType": "address", "name": "submitter", "type": "address"},
+            {"indexed": false, "internalType": "uint256", "name": "timestamp", "type": "uint256"}
+        ],
+        "name": "EntryRegistered",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {"indexed": true, "internalType": "bytes32", "name": "entryHash", "type": "bytes32"},
+            {"indexed": false, "internalType": "uint256", "name": "timestamp", "type": "uint256"}
+        ],
+        "name": "EntryVerified",
+        "type": "event"
+    }
+]

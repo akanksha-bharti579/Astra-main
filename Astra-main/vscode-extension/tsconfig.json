@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "module": "Node16",
+    "target": "ES2022",
+    "outDir": "out",
+    "lib": [
+      "ES2022",
+      "DOM"
+    ],
+    "sourceMap": true,
+    "rootDir": "src",
+    "strict": true,
+    "moduleResolution": "Node16",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@typescript-eslint/parser": [
+        "node_modules/@typescript-eslint/parser/dist/index.d.ts"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "test_files"
+  ],
+  "include": [
+    "src/**/*"
+  ]
+}

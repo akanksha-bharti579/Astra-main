@@ -1,0 +1,39 @@
+{
+    "carbonBudget": {
+        "monthly": 5000,
+        "daily": 200,
+        "perCommit": 50,
+        "alertThreshold": 0.8
+    },
+    "team": {
+        "dailyUsers": 100
+    },
+    "greenPolicy": {
+        "maxModelTier": "medium",
+        "bannedModels": [
+            "gpt-4-32k",
+            "text-davinci-003"
+        ],
+        "allowedRegions": [
+            "eu-north-1",
+            "us-west-2",
+            "ca-central-1",
+            "eu-west-3",
+            "sa-east-1",
+            "northamerica-northeast1",
+            "europe-north1"
+        ],
+        "requireCaching": true
+    },
+    "ci": {
+        "failOnWarning": false,
+        "excludePaths": [
+            "node_modules",
+            "out",
+            "dist",
+            ".git"
+        ],
+        "maxCarbonPerPR": 50,
+        "maxCostPerPR": 1.00
+    }
+}

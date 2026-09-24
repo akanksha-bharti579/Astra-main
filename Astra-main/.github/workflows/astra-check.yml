@@ -1,0 +1,112 @@
+# ╔══════════════════════════════════════════════════════════════╗
+# ║  🌿 Astra Carbon Budget Check - GitHub Actions Workflow     ║
+# ║  Blocks PRs that exceed carbon/cost budget thresholds        ║
+# ╚══════════════════════════════════════════════════════════════╝
+#
+# This workflow runs on every PR and push to main.
+# It scans the codebase for API calls, calculates projected
+# carbon footprint and cost, then blocks the PR if thresholds
+# defined in .astra.json are exceeded.
+#
+# Setup:
+#   1. Place this file in .github/workflows/astra-check.yml
+#   2. Create .astra.json in repository root with budget config
+#   3. PRs will be automatically checked
+
+name: 🌿 Astra Carbon Check
+
+on:
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - '**/*.ts'
+      - '**/*.js'
+      - '**/*.py'
+      - '**/*.tf'
+      - '**/*.yml'
+      - '**/*.yaml'
+      - '.astra.json'
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write  # For posting PR comments
+
+jobs:
+  carbon-check:
+    name: 🌱 Carbon Budget Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: 📦 Install Astra dependencies
+        working-directory: vscode-extension
+        run: npm ci
+
+      - name: 🔨 Build Astra CI scanner
+        working-directory: vscode-extension
+        run: npx tsc -p .
+
+      - name: 🌿 Run Astra Carbon Check
+        id: astra-check
+        working-directory: vscode-extension
+        run: |
+          # Run the CI scanner against the repository root
+          node out/ci/astra-ci.js "${{ github.workspace }}"
+        continue-on-error: true
+
+      - name: 📝 Post PR Comment
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const reportPath = '${{ github.workspace }}/.astra-report.md';
+            
+            let body = '## 🌿 Astra Carbon Check\n\nNo report generated.';
+            if (fs.existsSync(reportPath)) {
+              body = fs.readFileSync(reportPath, 'utf-8');
+            }
+            
+            // Find and update existing comment, or create new one
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+            });
+            
+            const botComment = comments.find(c => 
+              c.body.includes('Astra Carbon Budget Report') || 
+              c.body.includes('Astra Carbon Check')
+            );
+            
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }
+
+      - name: 🚫 Fail if budget exceeded
+        if: steps.astra-check.outcome == 'failure'
+        run: |
+          echo "❌ Astra Carbon Check FAILED - PR exceeds carbon/cost budget."
+          echo "📋 Review the .astra-report.md or PR comment for details."
+          exit 1
